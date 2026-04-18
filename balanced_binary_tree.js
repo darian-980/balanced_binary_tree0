@@ -8,12 +8,14 @@ function binaryTreeMake(passedArray) {
         return { value, leftNode, rightNode };
     }
 
+    let tree = BuildTree(passedArray);
+
     function BuildTree(passedArray) {
         if (passedArray.length === 0) return null;
         if (passedArray.length <= 1) {
             const newNode = createNode();
             newNode.value = passedArray[0];
-            console.log([newNode.value])
+            // console.log([newNode.value])
             return newNode;
         }
         const start = 0;
@@ -32,7 +34,65 @@ function binaryTreeMake(passedArray) {
         return newNode;
     }
 
-    let tree = BuildTree(passedArray);
+    function includes(searchValue) {
+        function includesInner(searchValue, base = tree) {
+            if (base === null | base === undefined) return false;
+            if (base.value === searchValue) return true;
+            // console.log(base, base.value);
+
+            if (searchValue > base.value) {
+                if (includesInner(searchValue, base.rightNode)) {
+                    return true;
+                }
+            }
+            if (searchValue < base.value) {
+                if (includesInner(searchValue, base.leftNode)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        return includesInner(searchValue);
+    }
+
+    function insert(insertValue) {
+        function insertInner(insertValue, base = tree) {
+            if (base.value === insertValue) {
+                console.log("error value already exists")
+                return false;
+            }
+
+            // console.log(base, base.value);
+
+            if (insertValue > base.value) {
+                if (base.rightNode === null) {
+                    console.log("adding new node on the right")
+                    const newNode = createNode();
+                    newNode.value = insertValue;
+                    base.rightNode = newNode;
+                    return true;
+                } else {
+                    return insertInner(insertValue, base.rightNode)
+                }
+            }
+
+            else if (insertValue < base.value) {
+                if (base.leftNode === null) {
+                    console.log("adding new node on the left")
+                    const newNode = createNode();
+                    newNode.value = insertValue;
+                    base.leftNode = newNode;
+                    return true;
+                } else {
+                    return insertInner(insertValue, base.leftNode)
+                }
+
+            }
+
+        }
+        return insertInner(insertValue);
+    }
 
     const prettyPrint = (node, prefix = '', isLeft = true) => {
         if (node === null || node === undefined) {
@@ -44,12 +104,8 @@ function binaryTreeMake(passedArray) {
         prettyPrint(node.leftNode, `${prefix}${isLeft ? '    ' : '│   '}`, true);
     }
 
-    // function returnTree(){
-    //     return prettyPrint(root);
-    // }
 
-
-    return { tree, prettyPrint }
+    return { tree, prettyPrint, includes, insert }
 }
 
 function binaryTree(passedArray) {
@@ -75,4 +131,11 @@ newTree.prettyPrint(newTree.tree)
 
 // console.log(...testArray.slice(0, 0))
 //
+
+console.log(newTree.includes(7645))
+
+console.log(newTree.insert(6))
+console.log(newTree.insert(8940))
+console.log(newTree.insert(332))
+newTree.prettyPrint(newTree.tree)
 
