@@ -94,6 +94,51 @@ function binaryTreeMake(passedArray) {
         return insertInner(insertValue);
     }
 
+    function deleteItem(deleteValue) {
+        function deleteInner(deleteValue, base = tree, previousNode = null) {
+            if (deleteValue === base.value) {
+                const newNode = createNode();
+                newNode.value = deleteValue;
+
+                if (base.leftNode === null && base.rightNode === null) { //target has no children // both NULL
+                    if (previousNode.leftNode === base) {
+                        previousNode.leftNode = null;
+                    }
+                    else if (previousNode.rightNode === base) {
+                        previousNode.rightNode = null;
+                    }
+                }
+
+                else if ((base.leftNode === null && base.rightNode !== null) || (base.rightNode === null && base.leftNode !== null)) { //target has 1 valid child and 1 null child (left or right)
+                    let validNode;
+                    if (base.leftNode !== null) validNode = base.leftNode;
+                    else validNode = base.rightNode;
+
+                    if (previousNode.leftNode === base) {
+                        previousNode.leftNode = validNode;
+                    }
+                    else if (previousNode.rightNode === base) {
+                        previousNode.rightNode = validNode;
+                    }
+                }
+                
+                else if (base.leftNode !== null || base.rightNode !== null){
+                    
+                }
+            }
+
+            if (deleteValue > base.value) {
+                return deleteInner(deleteValue, base.rightNode, base)
+            }
+
+            else if (deleteValue < base.value) {
+                return deleteInner(deleteValue, base.leftNode, base)
+            }
+        }
+
+        return deleteInner(deleteValue);
+    }
+
     const prettyPrint = (node, prefix = '', isLeft = true) => {
         if (node === null || node === undefined) {
             return;
@@ -105,7 +150,7 @@ function binaryTreeMake(passedArray) {
     }
 
 
-    return { tree, prettyPrint, includes, insert }
+    return { tree, prettyPrint, includes, insert, deleteItem }
 }
 
 function binaryTree(passedArray) {
@@ -139,3 +184,6 @@ console.log(newTree.insert(8940))
 console.log(newTree.insert(332))
 newTree.prettyPrint(newTree.tree)
 
+
+console.log(newTree.deleteItem(7645));
+newTree.prettyPrint(newTree.tree)
