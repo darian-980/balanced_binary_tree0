@@ -96,78 +96,73 @@ function binaryTreeMake(passedArray) {
 
     function deleteItem(deleteValue) {
         function deleteInner(deleteValue, base = tree, previousNode = null) {
-            if (deleteValue === base.value) {
+            if (base.leftNode === null || base.leftNode === undefined) {
+            } else {
+                if (deleteValue === base.value) {
 
-                if (base.leftNode === null && base.rightNode === null) { //target has no children (both NULL)
-                    if (previousNode.leftNode === base) {
-                        previousNode.leftNode = null;
+                    if (base.leftNode === null && base.rightNode === null) { //target has no children (both NULL)
+                        if (previousNode.leftNode === base) {
+                            previousNode.leftNode = null;
+                            return true;
+                        }
+                        else if (previousNode.rightNode === base) {
+                            previousNode.rightNode = null;
+                            return true;
+                        }
                     }
-                    else if (previousNode.rightNode === base) {
-                        previousNode.rightNode = null;
+
+                    else if ((base.leftNode === null && base.rightNode !== null) || (base.rightNode === null && base.leftNode !== null)) { //target has 1 valid child and 1 null child (left or right)
+                        let validNode;
+                        if (base.leftNode !== null) validNode = base.leftNode;
+                        else validNode = base.rightNode;
+
+                        if (previousNode.leftNode === base) {
+                            previousNode.leftNode = validNode;
+                            return true;
+                        }
+                        else if (previousNode.rightNode === base) {
+                            previousNode.rightNode = validNode;
+                            return true;
+                        }
+                    }
+
+                    else if (base.leftNode !== null || base.rightNode !== null) { //target has 2 children (both non-null)
+                        // console.log("swap removal")
+                        return swapRemoval(base, base, previousNode, previousNode, "left");
                     }
                 }
 
-                else if ((base.leftNode === null && base.rightNode !== null) || (base.rightNode === null && base.leftNode !== null)) { //target has 1 valid child and 1 null child (left or right)
-                    let validNode;
-                    if (base.leftNode !== null) validNode = base.leftNode;
-                    else validNode = base.rightNode;
-
-                    if (previousNode.leftNode === base) {
-                        previousNode.leftNode = validNode;
-                    }
-                    else if (previousNode.rightNode === base) {
-                        previousNode.rightNode = validNode;
-                    }
+                if (deleteValue > base.value) {
+                    return deleteInner(deleteValue, base.rightNode, base)
                 }
 
-                else if (base.leftNode !== null || base.rightNode !== null) { //target has 2 children (both non-null)
-                    console.log("swap removal")
-                    swapRemoval(base, base, previousNode, previousNode, "left")
+                else if (deleteValue < base.value) {
+                    return deleteInner(deleteValue, base.leftNode, base)
                 }
             }
-
-            if (deleteValue > base.value) {
-                return deleteInner(deleteValue, base.rightNode, base)
-            }
-
-            else if (deleteValue < base.value) {
-                return deleteInner(deleteValue, base.leftNode, base)
-            }
+            return false;
         }
 
         function swapRemoval(base, swapNode, reattachNode, previousNode, direction, rightOnce = true) { //function used to remove a node that has 2 children (left and right)
             if (direction === "left") {
                 if (base.leftNode === null || base.leftNode === undefined) {
 
-                    console.log(base.value)
-                    if (swapNode === tree) { console.log("base.leftnode is " + base.leftnode + " swapNode is " + swapNode.value + " direction is " + direction) }
-                    else { console.log("base.leftnode is " + base.leftnode + " swapNode is " + swapNode.value + " reattachNode is " + reattachNode.value + " direction is " + direction) }
+                    // console.log(base.value)
+                    // if (swapNode === tree) { console.log("base.leftnode is " + base.leftnode + " swapNode is " + swapNode.value + " direction is " + direction) }
+                    // else { console.log("base.leftnode is " + base.leftnode + " swapNode is " + swapNode.value + " reattachNode is " + reattachNode.value + " direction is " + direction) }
 
                     if (base.rightNode !== null) {
                         previousNode.leftNode = base.rightNode; // if the innermost leftnode we are going to swap has a child right node, we need to assign it to the previous node's left child so that the data doesn't get lost
                     } else {
                         previousNode.leftNode = null;
                     }
-                    if (swapNode !== tree) {
-                        if (reattachNode.leftNode === swapNode) { //if the stem of the node we are replacing has it on the left side, assign it to the left side
-                            reattachNode.leftNode = base;
-                        }
-                        else {
-                            reattachNode.rightNode = base;
-                        }
-                    }
 
-                    base.leftNode = swapNode.leftNode; //overrite the innermost left node's left path with the original node's LEFT path (taking it's place)
-                    base.rightNode = swapNode.rightNode; //overrite the innermost left node's left path with the original node's RIGHT path (taking it's place)
-                    if (swapNode === tree) {
-                        console.log("tet")
-                        tree = base;
-                        console.log(tree.value)
-                    }
-                    swapNode = null; //removing the original node completely
+                    swapNode.value = base.value; //replace the delete node's value with the left innermost child 
+
+                    return true;
                 }
                 else {
-                    console.log(base.value)
+                    // console.log(base.value)
                     if (rightOnce === true) {
                         swapRemoval(base.rightNode, swapNode, reattachNode, base, direction, false) // go right once and then after that only go left to get the closest greater value
                     }
@@ -191,12 +186,41 @@ function binaryTreeMake(passedArray) {
                 }
             }
 
-            return false;
+            return true;
 
         }
 
 
         return deleteInner(deleteValue);
+    }
+
+    function levelOrderForEach(callback) {
+        const levelArray = [];
+
+        function navigate(base, level) { //used to populate levelArray
+            if (base === null || base === undefined) {
+                //end of stem
+            } else {
+                // console.log(base.value);
+                if (levelArray[level] === null || levelArray[level] === undefined) {
+                    levelArray[level] = [];
+                };
+
+                levelArray[level].push(base.value);
+                level += 1;
+
+                navigate(base.leftNode, level);
+                navigate(base.rightNode, level);
+            }
+
+        }
+        navigate(tree, 0);
+        for (let i = 0; i < levelArray.length; i++) {
+            for (let x = 0; x < levelArray[i].length; x++) {
+                // console.log();
+                callback(levelArray[i][x]);
+            }
+        }
     }
 
     const prettyPrint = (node, prefix = '', isLeft = true) => {
@@ -210,7 +234,7 @@ function binaryTreeMake(passedArray) {
     }
 
 
-    return { tree, prettyPrint, includes, insert, deleteItem }
+    return { tree, prettyPrint, includes, insert, deleteItem, levelOrderForEach }
 }
 
 function binaryTree(passedArray) {
@@ -253,5 +277,13 @@ console.log(newTree.deleteItem(765));
 newTree.prettyPrint(newTree.tree)
 console.log(newTree.deleteItem(34));
 newTree.prettyPrint(newTree.tree)
-console.log(newTree.tree.value);
+// console.log(newTree.tree.value);
+console.log(newTree.deleteItem(0));
+
 //
+
+function nothing(value) {
+    console.log("value is: " + value);
+}
+newTree.levelOrderForEach(nothing);
+console.log()//
