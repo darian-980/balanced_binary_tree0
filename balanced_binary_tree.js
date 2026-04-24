@@ -195,6 +195,9 @@ function binaryTreeMake(passedArray) {
     }
 
     function levelOrderForEach(callback) {
+        if (!callback) {
+            throw new Error("Error: missing callback function")
+        }
         if (tree === null || tree === undefined) return;
 
         const queue = [tree]; //create the queue and place the tree at the front
@@ -214,6 +217,60 @@ function binaryTreeMake(passedArray) {
         }
     }
 
+    function preOrderForEach(callback) {
+        if (!callback) {
+            throw new Error("Error: missing callback function")
+        }
+        if (tree === null || tree === undefined) return;
+
+
+        function preorder(base) {
+            if (base === null || base === undefined) return;
+
+            callback(base.value);
+            preorder(base.leftNode);
+            preorder(base.rightNode);
+        }
+
+        preorder(tree);
+    }
+
+    function inOrderForEach(callback) {
+        if (!callback) {
+            throw new Error("Error: missing callback function")
+        }
+        if (tree === null || tree === undefined) return;
+
+
+        function inorder(base) {
+            if (base === null || base === undefined) return;
+
+            inorder(base.leftNode);
+            callback(base.value);
+            inorder(base.rightNode);
+        }
+
+        inorder(tree);
+    }
+
+    function postOrderForEach(callback) {
+        if (!callback) {
+            throw new Error("Error: missing callback function")
+        }
+        if (tree === null || tree === undefined) return;
+
+
+        function postorder(base) {
+            if (base === null || base === undefined) return;
+
+            postorder(base.leftNode);
+            postorder(base.rightNode);
+            callback(base.value);
+        }
+
+        postorder(tree);
+    }
+
     const prettyPrint = (node, prefix = '', isLeft = true) => {
         if (node === null || node === undefined) {
             return;
@@ -225,7 +282,7 @@ function binaryTreeMake(passedArray) {
     }
 
 
-    return { tree, prettyPrint, includes, insert, deleteItem, levelOrderForEach }
+    return { tree, prettyPrint, includes, insert, deleteItem, levelOrderForEach, preOrderForEach, inOrderForEach, postOrderForEach }
 }
 
 function binaryTree(passedArray) {
@@ -276,5 +333,8 @@ console.log(newTree.deleteItem(0));
 function basicLog(value) {
     console.log("value is: " + value);
 }
-newTree.levelOrderForEach(basicLog);
+// newTree.levelOrderForEach(basicLog);
+// newTree.levelOrderForEach();
+
+newTree.postOrderForEach(basicLog);
 //
