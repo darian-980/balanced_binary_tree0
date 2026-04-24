@@ -195,30 +195,21 @@ function binaryTreeMake(passedArray) {
     }
 
     function levelOrderForEach(callback) {
-        const levelArray = [];
+        if (tree === null || tree === undefined) return;
 
-        function navigate(base, level) { //used to populate levelArray
-            if (base === null || base === undefined) {
-                //end of stem
-            } else {
-                // console.log(base.value);
-                if (levelArray[level] === null || levelArray[level] === undefined) {
-                    levelArray[level] = [];
-                };
+        const queue = [tree]; //create the queue and place the tree at the front
 
-                levelArray[level].push(base.value);
-                level += 1;
+        while (queue.length > 0) {
+            const currentNode = queue.shift();
 
-                navigate(base.leftNode, level);
-                navigate(base.rightNode, level);
+            callback(currentNode.value);
+
+            if (currentNode.leftNode !== null && currentNode.leftNode !== undefined) {
+                queue.push(currentNode.leftNode);
             }
 
-        }
-        navigate(tree, 0);
-        for (let i = 0; i < levelArray.length; i++) {
-            for (let x = 0; x < levelArray[i].length; x++) {
-                // console.log();
-                callback(levelArray[i][x]);
+            if (currentNode.rightNode !== null && currentNode.rightNode !== undefined) {
+                queue.push(currentNode.rightNode);
             }
         }
     }
@@ -282,8 +273,8 @@ console.log(newTree.deleteItem(0));
 
 //
 
-function nothing(value) {
+function basicLog(value) {
     console.log("value is: " + value);
 }
-newTree.levelOrderForEach(nothing);
-console.log()//
+newTree.levelOrderForEach(basicLog);
+//
