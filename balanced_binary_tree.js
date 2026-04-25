@@ -56,6 +56,89 @@ function binaryTreeMake(passedArray) {
         return includesInner(searchValue);
     }
 
+    function depth(searchValue) {
+        function depthInner(searchValue, base = tree, level = 0) {
+            if (base === null | base === undefined) return undefined;
+            if (base.value === searchValue) return level;
+
+            if (searchValue > base.value) {
+                return depthInner(searchValue, base.rightNode, level + 1)
+            }
+            if (searchValue < base.value) {
+                return depthInner(searchValue, base.leftNode, level + 1)
+            }
+
+            return undefined;
+        }
+        return depthInner(searchValue);
+    }
+
+    function height(searchValue) {
+        let maxLevel = 0;
+
+        function depthInner(base, level = 0) {
+            if (base === null | base === undefined) {
+                if (level > maxLevel) maxLevel = level;
+            } else {
+                depthInner(base.leftNode, level + 1)
+                depthInner(base.rightNode, level + 1)
+            }
+        }
+
+        function findInner(searchValue, base = tree) {
+            if (base === null | base === undefined) return false;
+            if (base.value === searchValue) {
+                depthInner(base);
+                return true;
+            };
+
+            if (searchValue > base.value) {
+                findInner(searchValue, base.rightNode)
+            }
+            if (searchValue < base.value) {
+                findInner(searchValue, base.leftNode)
+            }
+
+            return false;
+        }
+        findInner(searchValue);
+        if (maxLevel === -1) return 0;
+        else return maxLevel - 1;
+    }
+
+    function isBalanced() {
+        function innerIsBalanced(base = tree) {
+            if (base === null || base === undefined) return;
+
+            // console.log(base.value)
+            // console.log(height(base.leftNode.value), height(base.rightNode.value))
+            let leftValue = 0, rightValue = 0;
+            if (base.leftNode.value !== null && base.leftNode.value !== undefined) {
+                leftValue = height(base.leftNode.value);
+                // console.log("assigned left")
+            }
+            if (base.rightNode.value !== null && base.rightNode.value !== undefined) {
+                rightValue = height(base.rightNode.value);
+                // console.log("assigned right")
+            }
+            const height_difference = Math.abs(leftValue - rightValue);
+            // console.log(height_difference)
+            if (height_difference > 1) {
+                return false;
+            } else {
+                if (leftValue !== 0) {
+                    return innerIsBalanced(base.leftNode);
+                }
+                if (rightValue !== 0) {
+                    return innerIsBalanced(base.rightNode);
+                }
+
+            }
+            return true;
+        }
+        return innerIsBalanced();
+    }
+
     function insert(insertValue) {
         function insertInner(insertValue, base = tree) {
             if (base.value === insertValue) {
@@ -282,7 +365,7 @@ function binaryTreeMake(passedArray) {
     }
 
 
-    return { tree, prettyPrint, includes, insert, deleteItem, levelOrderForEach, preOrderForEach, inOrderForEach, postOrderForEach }
+    return { tree, prettyPrint, includes, insert, deleteItem, levelOrderForEach, preOrderForEach, inOrderForEach, postOrderForEach, depth, height, isBalanced }
 }
 
 function binaryTree(passedArray) {
@@ -336,5 +419,22 @@ function basicLog(value) {
 // newTree.levelOrderForEach(basicLog);
 // newTree.levelOrderForEach();
 
-newTree.postOrderForEach(basicLog);
+// newTree.postOrderForEach(basicLog);
+//
+
+// console.log("depth: " + newTree.depth(6));
+// console.log("depth: " + newTree.depth(6786));
+// console.log("height is: " + newTree.height(76))
+// console.log("height is: " + newTree.height(5))
+// console.log("height is: " + newTree.height(7645))
+
+// console.log(newTree.insert(1))
+// console.log(newTree.insert(3))
+// console.log(newTree.insert(10))
+// console.log(newTree.insert(11))
+// newTree.prettyPrint(newTree.tree)
+
+// console.log(height(newTree.height()))
+
+console.log("tree is balanced: " + newTree.isBalanced())
 //
