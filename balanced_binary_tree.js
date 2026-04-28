@@ -108,16 +108,16 @@ function binaryTreeMake(passedArray) {
 
     function isBalanced() {
         function innerIsBalanced(base = tree) {
-            if (base === null || base === undefined) return;
+            if (base === null || base === undefined) return true;
 
             // console.log(base.value)
             // console.log(height(base.leftNode.value), height(base.rightNode.value))
             let leftValue = 0, rightValue = 0;
-            if (base.leftNode.value !== null && base.leftNode.value !== undefined) {
+            if (base.leftNode !== null && base.leftNode !== undefined) {
                 leftValue = height(base.leftNode.value);
                 // console.log("assigned left")
             }
-            if (base.rightNode.value !== null && base.rightNode.value !== undefined) {
+            if (base.rightNode !== null && base.rightNode !== undefined) {
                 rightValue = height(base.rightNode.value);
                 // console.log("assigned right")
             }
@@ -126,13 +126,7 @@ function binaryTreeMake(passedArray) {
             if (height_difference > 1) {
                 return false;
             } else {
-                if (leftValue !== 0) {
-                    return innerIsBalanced(base.leftNode);
-                }
-                if (rightValue !== 0) {
-                    return innerIsBalanced(base.rightNode);
-                }
-
+                return innerIsBalanced(base.leftNode) && innerIsBalanced(base.rightNode);
             }
             return true;
         }
