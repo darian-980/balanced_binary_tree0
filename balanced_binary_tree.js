@@ -26,8 +26,8 @@ function binaryTreeMake(passedArray) {
         const newNode = createNode();
         newNode.value = passedArray[mid];
 
-        console.log(passedArray)
-        console.log("start: " + start + " mid: " + mid);
+        // console.log(passedArray)
+        // console.log("start: " + start + " mid: " + mid);
         newNode.leftNode = BuildTree([...passedArray.slice(start, mid)])
         newNode.rightNode = BuildTree([...passedArray.slice(mid + 1)])
 
@@ -133,6 +133,20 @@ function binaryTreeMake(passedArray) {
         return innerIsBalanced();
     }
 
+    function rebalance() {
+        const balanceArray = [];
+        inOrderForEach(appendArray);
+        console.log("rebalancing tree...")
+        // console.log(balanceArray);
+        tree = BuildTree(balanceArray);
+        this.tree = tree;
+
+        function appendArray(nodeValue) {
+            balanceArray.push(nodeValue);
+        }
+
+    }
+
     function insert(insertValue) {
         function insertInner(insertValue, base = tree) {
             if (base.value === insertValue) {
@@ -144,7 +158,7 @@ function binaryTreeMake(passedArray) {
 
             if (insertValue > base.value) {
                 if (base.rightNode === null) {
-                    console.log("adding new node on the right")
+                    // console.log("adding new node on the right")
                     const newNode = createNode();
                     newNode.value = insertValue;
                     base.rightNode = newNode;
@@ -156,7 +170,7 @@ function binaryTreeMake(passedArray) {
 
             else if (insertValue < base.value) {
                 if (base.leftNode === null) {
-                    console.log("adding new node on the left")
+                    // console.log("adding new node on the left")
                     const newNode = createNode();
                     newNode.value = insertValue;
                     base.leftNode = newNode;
@@ -359,10 +373,10 @@ function binaryTreeMake(passedArray) {
     }
 
 
-    return { tree, prettyPrint, includes, insert, deleteItem, levelOrderForEach, preOrderForEach, inOrderForEach, postOrderForEach, depth, height, isBalanced }
+    return { tree, prettyPrint, includes, insert, deleteItem, levelOrderForEach, preOrderForEach, inOrderForEach, postOrderForEach, depth, height, isBalanced, rebalance }
 }
 
-function binaryTree(passedArray) {
+export function binaryTree(passedArray) {
     const sortedArray = [...mergesort(passedArray)]
     const noDuplicatesArray = [...new Set(sortedArray)]
     // console.log(noDuplicatesArray)
@@ -375,41 +389,41 @@ function binaryTree(passedArray) {
 // [1, 2, 3, 4][5, 6, 7, 8]
 
 // const testArray = [4, 5, 2, 7, 7, 7, 7, 7, 7, 7, 5, 34, 23423, 765, 4];
-// const testArray = [4, 5, 2, 0, 7, 332, 7, 98, 76, 7645, 5, 34, 23423, 765, 4];
-const testArray = [4, 5, 2, 0, 7, 332, 7, 8, 9, 98, 76, 7645, 5, 34, 23423, 765, 4];
-// console.log(mergesort(testArray));
+// // const testArray = [4, 5, 2, 0, 7, 332, 7, 98, 76, 7645, 5, 34, 23423, 765, 4];
+// const testArray = [4, 5, 2, 0, 7, 332, 7, 8, 9, 98, 76, 7645, 5, 34, 23423, 765, 4];
+// // console.log(mergesort(testArray));
 
-const newTree = binaryTree(testArray);
-console.log(newTree.tree)
-newTree.prettyPrint(newTree.tree)
-
-// console.log(...testArray.slice(0, 0))
-//
-
-console.log(newTree.includes(7645))
-
-console.log(newTree.insert(6))
-console.log(newTree.insert(8940))
-console.log(newTree.insert(332))
+// const newTree = binaryTree(testArray);
+// console.log(newTree.tree)
 // newTree.prettyPrint(newTree.tree)
 
+// // console.log(...testArray.slice(0, 0))
+// //
 
-// console.log(newTree.deleteItem(7645));
+// console.log(newTree.includes(7645))
+
+// console.log(newTree.insert(6))
+// console.log(newTree.insert(8940))
+// console.log(newTree.insert(332))
+// // newTree.prettyPrint(newTree.tree)
+
+
+// // console.log(newTree.deleteItem(7645));
+// // newTree.prettyPrint(newTree.tree)
+
 // newTree.prettyPrint(newTree.tree)
+// console.log(newTree.deleteItem(765));
+// newTree.prettyPrint(newTree.tree)
+// console.log(newTree.deleteItem(34));
+// newTree.prettyPrint(newTree.tree)
+// // console.log(newTree.tree.value);
+// console.log(newTree.deleteItem(0));
 
-newTree.prettyPrint(newTree.tree)
-console.log(newTree.deleteItem(765));
-newTree.prettyPrint(newTree.tree)
-console.log(newTree.deleteItem(34));
-newTree.prettyPrint(newTree.tree)
-// console.log(newTree.tree.value);
-console.log(newTree.deleteItem(0));
+// //
 
-//
-
-function basicLog(value) {
-    console.log("value is: " + value);
-}
+// function basicLog(value) {
+//     console.log("value is: " + value);
+// }
 // newTree.levelOrderForEach(basicLog);
 // newTree.levelOrderForEach();
 
@@ -426,9 +440,12 @@ function basicLog(value) {
 // console.log(newTree.insert(3))
 // console.log(newTree.insert(10))
 // console.log(newTree.insert(11))
+// // newTree.prettyPrint(newTree.tree)
+
+// // console.log(height(newTree.height()))
+
+// console.log("tree is balanced: " + newTree.isBalanced())
+
+// newTree.rebalance();
 // newTree.prettyPrint(newTree.tree)
-
-// console.log(height(newTree.height()))
-
-console.log("tree is balanced: " + newTree.isBalanced())
-//
+// console.log("tree is balanced: " + newTree.isBalanced())
